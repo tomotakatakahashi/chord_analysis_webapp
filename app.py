@@ -22,11 +22,6 @@ def index_page():
     """Render the Index Page"""
     return render_template("index.html")
 
-@app.route("/license", methods=["GET"])
-def license_page():
-    """Render License page"""
-    return render_template("license.html")
-
 @app.route('/chord_tracker', methods=['GET', 'POST'])
 def upload_file():
     """API part"""
