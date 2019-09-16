@@ -1,5 +1,5 @@
-var chordSeq = [""];
-var timeline = [0];
+let chordSeq = [""];
+let timeline = [0];
 const audioFileObjectURLs = []; // URLs to revoke
 
 
@@ -35,19 +35,37 @@ function refreshAudioPlayerBlock(audioFileURL){
 }
 
 function refreshChordView(cSeq, tLine){
-    chordView.innerHTML = "<p>Ready.</p>";
-    chordSeq = cSeq;
-    timeline = tLine;
+    [chordSeq, timeline] = compressSeqs(cSeq, tLine);
+
+    const chordView = document.getElementById("chordView");
+    chordView.innerHTML = "";
+    for(let i = 0; i < chordSeq.length; i++){
+        if(i){
+            //for wrapping
+            const space = document.createTextNode(" ");
+            chordView.appendChild(space);
+        }
+
+        const chord = document.createElement("span");
+        chord.id = "chord_" + i.toString();
+        chord.innerHTML = chordSeq[i];
+        chord.style.margin = "1em";
+        chordView.appendChild(chord);
+    }
 
     const audio = document.getElementById("audio");
     audio.addEventListener("timeupdate", function(event){
-        var chordIdx = 0;
         // timeline[chordIdx] <= this.currentTime < timeline[chordIdx + 1]
-        while(chordIdx + 1 < chordSeq.length && timeline[chordIdx + 1] <= this.currentTime){
-            chordIdx++;
+        let chordIdx = lowerBound(timeline, 0, chordSeq.length, this.currentTime);
+        if(chordIdx == chordSeq.length || timeline[chordIdx] != this.currentTime){
+            chordIdx--;
         }
-        const chordView = document.getElementById("chordView");
-        chordView.innerHTML = "<p>" + chordSeq[chordIdx] + "</p>";
+
+        for(let i = 0; i < chordView.children.length; i++){
+            chordView.children[i].style.backgroundColor = null;
+        }
+        const chord = document.getElementById("chord_" + chordIdx.toString());
+        chord.style.backgroundColor = "#ADD8E6";
     });
 }
 
@@ -63,6 +81,7 @@ function fileIptOnChange(files){
         formData.set("fileIpt", files[0]);
 
         const audio = document.getElementById("audio");
+        const chordView = document.getElementById("chordView");
         chordView.innerHTML = "<p>Loading. Please wait for 30 seconds.</p>";
         $.ajax({
             url: "chord_tracker",
@@ -102,7 +121,7 @@ function lowerBound(array, beginIdx, endIdx, x){
 
 function compressSeqs(chordSeq, timeline){
     const retChordSeq = [], retTimeline = [];
-    var idx = 0;
+    let idx = 0;
     while(idx < chordSeq.length){
         retChordSeq.push(chordSeq[idx]);
         retTimeline.push(timeline[idx]);
