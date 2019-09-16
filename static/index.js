@@ -82,3 +82,74 @@ function fileIptOnChange(files){
         )
     }
 }
+
+
+
+function lowerBound(array, beginIdx, endIdx, x){
+    // binary search.
+    // cf. https://cpprefjp.github.io/reference/algorithm/lower_bound.html
+    if(endIdx - beginIdx == 0){
+        return beginIdx
+    }
+    const midIdx = Math.floor((beginIdx + endIdx) / 2);
+    if(array[midIdx] < x){
+        return lowerBound(array, midIdx + 1, endIdx, x);
+    }else{
+        return lowerBound(array, beginIdx, midIdx, x);
+    }
+}
+
+
+function compressSeqs(chordSeq, timeline){
+    const retChordSeq = [], retTimeline = [];
+    var idx = 0;
+    while(idx < chordSeq.length){
+        retChordSeq.push(chordSeq[idx]);
+        retTimeline.push(timeline[idx]);
+
+        const chordNow = chordSeq[idx];
+        idx++;
+        while(idx < chordSeq.length && chordSeq[idx] == chordNow){
+            idx++;
+        }
+    }
+    return [retChordSeq, retTimeline];
+}
+
+function tests(){
+    console.assert(lowerBound([3, 5, 5, 6, 7, 7, 8], 0, 7, 5) == 1);
+    console.assert(lowerBound([3, 5, 5, 6, 7, 7, 8], 0, 7, 4) == 1);
+    console.assert(lowerBound([3, 5, 5, 6, 7, 7, 8], 0, 7, 7) == 4);
+    console.assert(lowerBound([100], 0, 1, 300) == 1);
+
+    function compareArrays(arr1, arr2){
+        return arr1.every(
+            (value, index) =>
+                value.every(
+                    (val, idx) =>
+                        val == arr2[index][idx]
+                )
+        )
+    }
+    console.assert(compareArrays([["a", "b"], [5, 6]], [["a", "b"], [5, 6]]));
+    console.assert(!compareArrays([["a", "a"], [5, 6]], [["a", "b"], [5, 6]]));
+    console.assert(
+        compareArrays(
+            compressSeqs(["a", "b", "c"], [5, 6, 7]),
+            [["a", "b", "c"], [5, 6, 7]]
+        )
+    );
+    console.assert(
+        compareArrays(
+            compressSeqs(["a", "a", "a"], [5, 6, 7]),
+            [["a"], [5]]
+        )
+    );
+    console.assert(
+        compareArrays(
+            compressSeqs(["a", "a", "b", "b"], [5, 6, 7, 8]),
+            [["a", "b"], [5, 7]]
+        )
+    );
+    console.log("Tests done");
+}
