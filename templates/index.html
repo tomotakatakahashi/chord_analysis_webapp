@@ -6,12 +6,11 @@
   </head>
   <body>
     <h1>Chord Fit</h1>
-    <form id="fileForm">
-      <input type="file" id="fileIpt" name="fileIpt" accept="audio/*" onchange="handleFiles(this.files)">
-    </form>
-    <div id="audioPlayer"></div>
+    <input type="file" id="fileIpt" name="fileIpt" accept="audio/*" onchange="fileIptOnChange(this.files)">
+    <a href="#" onclick="sampleOnClick()">Sample</a> (from <a href="http://andotowa.quu.cc/">Classical Music Sound Library</a>).
+    <div id="audioPlayerBlock"></div>
     <div id="chordView"></div>
-    <p><a href="https://github.com/tomotakatakahashi/chord_analysis_webapp">Source</a></p>
+    <p><a href="https://github.com/tomotakatakahashi/chord_analysis_webapp">Source Code</a></p>
     <script src="{{ url_for("static", filename="jquery-3.4.1.min.js") }}"></script>
     <script type="text/javascript" src="{{ url_for("static", filename="index.js") }}"></script>
   </body>
