@@ -22,6 +22,11 @@ def index_page():
     """Render the Index Page"""
     return render_template("index.html")
 
+@app.route("/about", methods=["GET"])
+def about():
+    """Render the About Page"""
+    return render_template("about.html")
+
 @app.route('/chord_tracker', methods=['GET', 'POST'])
 def upload_file():
     """API part"""
