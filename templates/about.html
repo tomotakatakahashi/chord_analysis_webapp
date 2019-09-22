@@ -1,24 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127842378-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-127842378-2');
-    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Chord Fit: Automatic Chord Progression Recognition Web Application.">
     <meta name="keywords" content="chord,progression,recognition">
     <meta name="author" content="Tomotaka Takahashi">
     <link rel="stylesheet" href="{{ url_for("static", filename="bootstrap.min.css") }}">
-    <link rel="canonical" href="https://chord.fit/">
+    <link rel="canonical" href="https://chord.fit/about">
     <title>
-      Chord Fit
+      About - Chord Fit
     </title>
   </head>
   <body>
@@ -39,17 +30,10 @@
       </div>
     </nav>
     <main role="main" class="container" style="padding: 3rem 1.5rem;">
-      <h1>Chord Fit</h1>
-      <p> Upload a mp3 file and you will get chord progression of the song.</p>
-      <div class="custom-file">
-        <input type="file" class="custom-file-input" id="fileIpt" name="fileIpt" accept="audio/*" onchange="fileIptOnChange(this.files)">
-        <label class="custom-file-label" for="fileIpt">Upload MP3</label>
-      </div>
-      <p>Or use a <a href="#" onclick="sampleOnClick()">sample file</a> <span style="font-size: xx-small;">(from <a href="http://andotowa.quu.cc/"><cite>Classical Music Sound Library</cite></a>)</span>.</p>
-      <div id="audioPlayerBlock"></div>
-      <div id="chordView"></div>
+      <h1>About - Chord Fit</h1>
+      <p>This application is developed and maintained by <a href="https://www.linkedin.com/in/tomotaka-takahashi-b09a08156/" target="_blank">Tomotaka Takahashi</a>.</p>
+      <p>The source code is stored in <a href="https://github.com/tomotakatakahashi/chord_analysis_webapp">GitHub</a>.</p>
       <script type="text/javascript" src="{{ url_for("static", filename="jquery-3.3.1.min.js") }}"></script>
-      <script type="text/javascript" src="{{ url_for("static", filename="index.js") }}"></script>
       <script type="text/javascript" src="{{ url_for("static", filename="popper.min.js") }}"></script>
       <script type="text/javascript" src="{{ url_for("static", filename="bootstrap.min.js") }}"></script>
     </main>
