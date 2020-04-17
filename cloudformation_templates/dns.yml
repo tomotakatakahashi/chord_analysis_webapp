@@ -12,7 +12,7 @@ Parameters:
   EBCNAME:
     Type: String
   EBZoneID:
-    Type: String
+    Type: AWS::Route53::HostedZone::Id
 Resources:
   hostedZone:
     Type: AWS::Route53::HostedZone
