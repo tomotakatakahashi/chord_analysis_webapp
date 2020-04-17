@@ -1,3 +1,6 @@
 *~
 __pycache__/
 \#*\#
+/pkg.yml
+/packaged_templates/*
+!/packaged_templates/.gitkeep

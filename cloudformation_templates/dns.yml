@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  EnvSuffix:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - prod
+      - dev
+    Description: prod or dev.
+  DomainName:
+    Type: String
+  EBCNAME:
+    Type: String
+  EBZoneID:
+    Type: String
+Resources:
+  hostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref DomainName
+  recordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !Ref EBCNAME
+        EvaluateTargetHealth: false
+        HostedZoneId: !Ref EBZoneID
+      HostedZoneId: !Ref hostedZone
+      Name: !Ref DomainName
+      Type: A
