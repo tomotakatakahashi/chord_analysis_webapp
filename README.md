@@ -35,14 +35,15 @@ aws s3 rb s3://${BUCKET_NAME}
 
 ### DNS Settings for production environment
 ```
+ENV_SUFFIX=prod
 EB_ZONEID=Z1R25G3KIG2GBW # for APN1 region. See https://docs.aws.amazon.com/general/latest/gr/elasticbeanstalk.html
 DOMAIN_NAME=chord.fit
 CNAME=`aws elasticbeanstalk describe-environments| jq --raw-output ".Environments| map(select(.EnvironmentName == \"chord-fit-${ENV_SUFFIX}\"))| .[0].CNAME"`
 aws cloudformation deploy \
     --template-file cloudformation_templates/dns.yml \
-    --stack-name chord-fit-dns-${ENV_SUFFIX} \
+    --stack-name chord-fit-dns-prod \
     --parameter-override \
-        EnvSuffix=${ENV_SUFFIX} \
+        EnvSuffix=prod \
         DomainName=$DOMAIN_NAME \
         EBCNAME=$CNAME \
         EBZoneID=${EB_ZONEID}
