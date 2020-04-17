@@ -8,7 +8,7 @@
 
 ```
 git clone <this repository>
-pip3 install gunicorn==19.9.0 Flask==1.1.1 librosa==0.7.0
+pip3 install --requirement src/requirements.txt
 pip3 install -U colorama
 gunicorn app:app
 ```
