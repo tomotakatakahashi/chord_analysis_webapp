@@ -20,8 +20,6 @@ aws cloudformation deploy \
     ConfigSSL=$CONFIG_SSL \
     DomainName=$DOMAIN_NAME \
     --capabilities CAPABILITY_NAMED_IAM
-aws s3 rm --recursive s3://${BUCKET_NAME}/
-aws s3 rb s3://${BUCKET_NAME}
 ```
 
 ### DNS Settings for production environment
@@ -56,4 +54,10 @@ aws cloudformation deploy \
     ConfigSSL=$CONFIG_SSL \
     DomainName=$DOMAIN_NAME \
     --capabilities CAPABILITY_NAMED_IAM
+```
+
+Cleanup:
+```
+aws s3 rm --recursive s3://${BUCKET_NAME}/
+aws s3 rb s3://${BUCKET_NAME}
 ```
