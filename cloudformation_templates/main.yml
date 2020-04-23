@@ -10,6 +10,15 @@ Parameters:
   EmailAddress:
     Type: String
     Description: Your e-mail address for notification.
+  ConfigSSL:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+  DomainName:
+    Type: String
+    Default: ""
 Resources:
   ebServiceRole:
     Type: AWS::IAM::Role
@@ -52,6 +61,99 @@ Resources:
       InstanceProfileName: !Sub chord-fit-eb-ec2-role-${EnvSuffix}
       Roles:
         - !Ref ebEc2Role
+  ebVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        -
+          Key: Name
+          Value: !Sub chord-fit-${EnvSuffix}
+  ebSubnet0:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref ebVpc
+      AvailabilityZone:
+        !Select
+          - 0
+          - !GetAZs
+  ebRouteTable0:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ebVpc
+  ebIGRoute0:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref ebInternetGateway
+      RouteTableId: !Ref ebRouteTable0
+  ebRouteTableAssociation0:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref ebRouteTable0
+      SubnetId: !Ref ebSubnet0
+  ebSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.2.0/24
+      VpcId: !Ref ebVpc
+      AvailabilityZone:
+        !Select
+          - 1
+          - !GetAZs
+  ebRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref ebVpc
+  ebIGRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref ebInternetGateway
+      RouteTableId: !Ref ebRouteTable1
+  ebRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref ebRouteTable1
+      SubnetId: !Ref ebSubnet1
+  ebInternetGateway:
+    Type: AWS::EC2::InternetGateway
+  ebIGAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref ebInternetGateway
+      VpcId: !Ref ebVpc
+  ebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SecurityGroup for chord-fit ElasitcBeanstalk environment.
+      GroupName: !Sub chord-fit-${EnvSuffix}
+      SecurityGroupEgress:
+        -
+          CidrIp: 0.0.0.0/0
+          IpProtocol: -1
+      SecurityGroupIngress:
+        -
+          CidrIp: 0.0.0.0/0
+          Description: HTTP
+          FromPort: 80
+          ToPort: 80
+          IpProtocol: tcp
+        -
+          CidrIp: 0.0.0.0/0
+          Description: HTTPS
+          FromPort: 443
+          ToPort: 443
+          IpProtocol: tcp
+      Tags:
+        -
+          Key: Name
+          Value: !Sub chord-fit-${EnvSuffix}
+      VpcId: !Ref ebVpc
   ebApplication:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
@@ -66,7 +168,8 @@ Resources:
       SourceBundle: ../src/
   ebEnvironment:
     Type: AWS::ElasticBeanstalk::Environment
-    DependsOn: ebApplication
+    DependsOn:
+      - ebApplication
     Properties:
       ApplicationName: !Sub chord-fit-${EnvSuffix}
       Description: Environment
@@ -92,6 +195,38 @@ Resources:
           Namespace: aws:ec2:instances
           OptionName: InstanceTypes
           Value: t3.micro, t3.small
+        -
+          ResourceName: AWSEBSecurityGroup
+          Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value: !Ref ebVpc
+        -
+          ResourceName: AWSEBAutoScalingLaunchConfiguration
+          Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value: !GetAtt ebSecurityGroup.GroupId
+        -
+          ResourceName: AWSEBAutoScalingGroup
+          Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value:
+            !Join
+              - ","
+              -
+                - !Ref ebSubnet0
+                - !Ref ebSubnet1
+        -
+          Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: CONFIG_SSL
+          Value: !Ref ConfigSSL
+        -
+          Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: DOMAIN_NAME
+          Value: !Ref DomainName
+        -
+          Namespace: aws:elasticbeanstalk:application:environment
+          OptionName: EMAIL_ADDRESS
+          Value: !Ref EmailAddress
       SolutionStackName: 64bit Amazon Linux 2 v3.0.0 running Python 3.7
       VersionLabel: !Ref ebAppVersion
   notificationTopic:
