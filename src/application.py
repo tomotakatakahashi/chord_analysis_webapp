@@ -8,8 +8,8 @@ import chord_analysis
 
 ALLOWED_EXTENSIONS = {"mp3", }
 
-app = Flask(__name__)
-app.config["SECRET_KEY"] = os.urandom(12)
+application = Flask(__name__)
+application.config["SECRET_KEY"] = os.urandom(12)
 
 
 def allowed_file(filename):
@@ -17,17 +17,17 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/", methods=["GET"])
+@application.route("/", methods=["GET"])
 def index_page():
     """Render the Index Page"""
     return render_template("index.html")
 
-@app.route("/about", methods=["GET"])
+@application.route("/about", methods=["GET"])
 def about():
     """Render the About Page"""
     return render_template("about.html")
 
-@app.route('/chord_tracker', methods=['GET', 'POST'])
+@application.route('/chord_tracker', methods=['GET', 'POST'])
 def upload_file():
     """API part"""
     if request.method == 'POST':
