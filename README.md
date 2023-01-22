@@ -1,7 +1,5 @@
 # Web Application to Analyze Chord Progression of Songs
 
-- [Chord Fit](https://chord.fit/)
-
 ## How to test on local
 - Set up Ubuntu 18.04
 - `sudo apt install python3 python3-pip libsndfile-dev ffmpeg`
