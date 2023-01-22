@@ -1,5 +1,7 @@
 # Web Application to Analyze Chord Progression of Songs
 
+![demo](demo.gif)
+
 ## How to test on local
 - Set up Ubuntu 18.04
 - `sudo apt install python3 python3-pip libsndfile-dev ffmpeg`
