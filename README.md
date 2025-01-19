@@ -14,6 +14,8 @@ cd src && python -m gunicorn application:application
 
 See http://127.0.0.1:8000/ and upload a MP3 file.
 
+Note that current dependencies do not support Python >= 3.11.
+
 
 ## References
 - [Fujishima, Takuya. Realtime Chord Recognition of Musical Sound: a System Using Common Lisp Music.](https://quod.lib.umich.edu/i/icmc/bbp2372.1999.446/--realtime-chord-recognition-of-musical-sound-a-system-using)
